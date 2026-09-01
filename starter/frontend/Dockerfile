@@ -1,24 +1,35 @@
-FROM  public.ecr.aws/docker/library/node:18.14.2-alpine3.17
+name: Frontend Continuous Integration
 
-ARG REACT_APP_MOVIE_API_URL
-ENV REACT_APP_MOVIE_API_URL=${REACT_APP_MOVIE_API_URL}
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'starter/frontend/**'
+  workflow_dispatch:
 
-WORKDIR /app
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: starter/frontend
 
-# Copy dependdency files
-COPY package*.json ./
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-# Install packages
-RUN npm ci
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: starter/frontend/package-lock.json
 
-# Copy code
-COPY . .
+      - name: Install Dependencies
+        run: npm ci
 
-# Build the app
-RUN npm run build
+      - name: Run Linter
+        run: npm run lint
 
-# Expose the port used by the React app
-EXPOSE 3000
-
-# Start the React app when the container starts
-CMD ["npm", "run", "serve"]
+      - name: Run Tests
+        run: CI=true npm test
