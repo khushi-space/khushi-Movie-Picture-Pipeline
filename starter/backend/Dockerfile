@@ -1,34 +1,29 @@
-FROM python:3.10-slim
+FROM python:3.10-slim-bookworm
 
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install system dependencies needed for uwsgi and pipenv
+# Install system dependencies needed to build uwsgi
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
     python3-dev \
-    libpcre3 \
     libpcre3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pipenv
 RUN pip install --no-cache-dir pipenv
 
-# Copy dependency files first (better caching)
+# Copy dependency files
 COPY Pipfile Pipfile.lock* ./
 
-# Install dependencies
+# Install Python packages
 RUN pipenv install --system --deploy --ignore-pipfile || pipenv install --system
 
-# Copy the rest of the application
+# Copy application code
 COPY . .
-
-# Create non-root user (optional but good practice)
-RUN useradd -m appuser && chown -R appuser /app
-USER appuser
 
 EXPOSE 5000
 
