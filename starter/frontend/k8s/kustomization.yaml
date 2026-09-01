@@ -7,5 +7,4 @@ resources:
 
 images:
   - name: frontend
-    newName: 282531899059.dkr.ecr.us-east-1.amazonaws.com/movie-frontend
-    newTag: latest
+    newName: 282531899059.dkr.ecr.us-east-1.amazonaws.com/frontend
