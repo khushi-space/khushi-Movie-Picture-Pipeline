@@ -94,6 +94,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Update kubeconfig
@@ -105,4 +106,4 @@ jobs:
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
           kustomize edit set image backend=${{ secrets.ECR_BACKEND_REPO }}:${{ needs.build.outputs.image-tag }}
-          kustomize build | kubectl apply -f -
+          kustomize build | kubectl apply --validate=false -f -
