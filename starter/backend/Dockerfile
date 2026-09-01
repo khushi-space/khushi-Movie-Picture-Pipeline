@@ -17,7 +17,8 @@ RUN apk update && \
 RUN mkdir -p /var/www/app && mkdir /app
 
 COPY Pipfile* /app
-RUN cd /app && pipenv install --system --deploy
+# Removed --deploy to avoid lockfile / Alpine build issues
+RUN cd /app && pipenv install --system
 
 COPY . /app
 
