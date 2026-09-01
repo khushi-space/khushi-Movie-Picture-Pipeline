@@ -95,5 +95,11 @@ jobs:
         run: |
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
-          kustomize edit set image frontend=${{ secrets.ECR_FRONTEND_REPO }}:${{ needs.build.outputs.image-tag }}
+          
+          # Get AWS Account ID dynamically
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_REGISTRY="${ACCOUNT_ID}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          
+          # Set full ECR image path
+          kustomize edit set image frontend=${ECR_REGISTRY}/${{ secrets.ECR_FRONTEND_REPO }}:${{ needs.build.outputs.image-tag }}
           kustomize build | kubectl apply --validate=false -f -
