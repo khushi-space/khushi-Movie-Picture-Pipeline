@@ -3,6 +3,9 @@ FROM python:3.10-slim-bookworm
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV PYTHONUNBUFFERED=1
 
+# Ensure Python treats /app as the root module search path
+ENV PYTHONPATH=/app
+
 WORKDIR /app
 
 # Install system dependencies needed to build uwsgi
