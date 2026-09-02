@@ -5,7 +5,10 @@ from flask_cors import CORS
 from .movies import movies_api
 
 app = Flask(__name__)
-CORS(app)
+
+# Apply CORS globally across all routes, resources, and origins
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
 app.register_blueprint(movies_api)
 
 # Start app
