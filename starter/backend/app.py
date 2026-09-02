@@ -1,11 +1,11 @@
-import os
 import sys
-from flask import Flask
-from flask_cors import CORS
+import os
 
-# Ensure current directory is in Python path for absolute import resolution
+# Ensure current directory is in Python path before other imports
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+from flask import Flask
+from flask_cors import CORS
 from movies.movies_api import movies_api
 
 app = Flask(__name__)

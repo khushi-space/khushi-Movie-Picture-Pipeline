@@ -19,11 +19,9 @@ class Movies(MethodView):
                     for m_id, m_data in movies.items()
                 ]
             }), 200
-        
+
         # Single movie lookup
         if movie_id in movies:
             return jsonify({"movie": movies[movie_id]}), 200
-            
-        return jsonify({"message": "Movie not found"}), 404
 
-    
+        return jsonify({"message": "Movie not found"}), 404
