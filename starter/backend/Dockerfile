@@ -8,7 +8,7 @@ ENV PYTHONPATH=/app
 
 WORKDIR /app
 
-# Install system dependencies needed to build uwsgi
+# Install system dependencies needed to build uwsgi on Linux
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
@@ -16,8 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpcre3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pipenv
-RUN pip install --no-cache-dir pipenv
+# Install pipenv and uwsgi inside the container
+RUN pip install --no-cache-dir pipenv uwsgi
 
 # Copy dependency files
 COPY Pipfile Pipfile.lock* ./
