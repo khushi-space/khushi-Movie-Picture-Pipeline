@@ -1,6 +1,10 @@
 import os
+import sys
 from flask import Flask
 from flask_cors import CORS
+
+# Ensure current directory is in Python path for absolute import resolution
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from movies.movies_api import movies_api
 
