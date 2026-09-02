@@ -1,19 +1,29 @@
 from flask import jsonify
 from flask.views import MethodView
 
-# Dummy database to hold movie examples
+# Dummy database with integer IDs matching /movies/<int:movie_id>
 movies = {
-    "123": {"title": "Top Gun: Maverick", "description": "Fighter planes"},
-    "456": {"title": "Sonic the Hedgehog", "description": "Blue Sega character"},
-    "789": {"title": "A Quiet Place", "description": "Scary monsters"},
+    1: {"id": 1, "title": "Top Gun: Maverick", "description": "Fighter planes"},
+    2: {"id": 2, "title": "Sonic the Hedgehog", "description": "Blue Sega character"},
+    3: {"id": 3, "title": "A Quiet Place", "description": "Scary monsters"},
 }
 
 
 class Movies(MethodView):
     def get(self, movie_id):
         if movie_id is None:
-            # Return a list of all movies
-            return jsonify({"movies": [dict({"title": movie["title"]}, **{"id": i}) for i, movie in movies.items()]})
-        else:
-            # Return the details of a specific movie
-            return jsonify({"movie": movies[str(movie_id)]})
+            # Return list of all movies formatted with id and title
+            return jsonify({
+                "movies": [
+                    {"id": m_id, "title": m_data["title"], "description": m_data["description"]}
+                    for m_id, m_data in movies.items()
+                ]
+            }), 200
+        
+        # Single movie lookup
+        if movie_id in movies:
+            return jsonify({"movie": movies[movie_id]}), 200
+            
+        return jsonify({"message": "Movie not found"}), 404
+
+    
