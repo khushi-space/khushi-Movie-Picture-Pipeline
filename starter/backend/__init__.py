@@ -19,5 +19,3 @@ if __name__ == "__main__":
         port=int(os.getenv("FLASK_RUN_PORT", 5000)),
     )
 
-
-
