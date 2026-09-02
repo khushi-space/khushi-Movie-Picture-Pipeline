@@ -1,35 +1,19 @@
-name: Frontend Continuous Integration
+# Build stage
+FROM node:18-alpine AS build
 
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'starter/frontend/**'
-  workflow_dispatch:
+WORKDIR /app
 
-jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: starter/frontend
+COPY package*.json ./
+RUN npm ci
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+COPY . .
+ARG REACT_APP_MOVIE_API_URL
+ENV REACT_APP_MOVIE_API_URL=$REACT_APP_MOVIE_API_URL
+RUN npm run build
 
-      - name: Setup Node.js 18
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: starter/frontend/package-lock.json
+# Serve stage using Nginx
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
 
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Run Linter
-        run: npm run lint
-
-      - name: Run Tests
-        run: CI=true npm test
+CMD ["nginx", "-g", "daemon off;"]
