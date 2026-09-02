@@ -27,4 +27,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["uwsgi", "--http", ":5000", "--master", "--enable-threads", "--manage-script-name", "--mount", "/=app:app"]
+CMD ["uwsgi", "--http", "0.0.0.0:5000", "--module", "app:app", "--callable", "app"]
