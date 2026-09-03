@@ -7,5 +7,6 @@ node_modules/
 *.tfstate
 *.tfstate.*
 .terraform.tfstate.lock.info
+.env
 
 credentials
